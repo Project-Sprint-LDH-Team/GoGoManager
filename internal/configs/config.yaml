@@ -2,8 +2,4 @@ service:
   port: ":9999"
 
 database:
-  dataSourceName: "postgres://root:1233yuhanN212!@45.80.181.33:5432/gogomanager_db?sslmode=disable"
-
-spotifyConfig:
-  clientID: "a091b87674954b99aad83b3baeaf85f6"
-  clientSecret: "ce93995874ad42e0a267d61d527c921c"
+  dataSourceName: ""
