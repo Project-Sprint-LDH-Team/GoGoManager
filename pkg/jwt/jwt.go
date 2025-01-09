@@ -1,42 +1,62 @@
 package jwt
 
 import (
-	"errors"
+	"fmt"
+	"github.com/golang-jwt/jwt/v5"
 	"time"
-
-	"github.com/golang-jwt/jwt"
 )
 
-func CreateToken(id uint, username, secretKey string) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
-		jwt.MapClaims{
-			"id":       id,
-			"username": username,
-			"exp":      time.Now().Add(10 * time.Minute).Unix(),
+type Maker interface {
+	GenerateToken(userID uint) (string, error)
+	VerifyToken(token string) (*Claims, error)
+}
+
+type JWTMaker struct {
+	secretKey string
+}
+
+type Claims struct {
+	UserID uint `json:"user_id"`
+	jwt.RegisteredClaims
+}
+
+func NewJWTMaker(secretKey string) Maker {
+	return &JWTMaker{secretKey: secretKey}
+}
+
+func (maker *JWTMaker) GenerateToken(userID uint) (string, error) {
+	claims := Claims{
+		UserID: userID,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(maker.secretKey))
+}
+
+func (maker *JWTMaker) VerifyToken(tokenStr string) (*Claims, error) {
+	token, err := jwt.ParseWithClaims(
+		tokenStr,
+		&Claims{},
+		func(token *jwt.Token) (interface{}, error) {
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			}
+			return []byte(maker.secretKey), nil
 		},
 	)
 
-	key := []byte(secretKey)
-	tokenStr, err := token.SignedString(key)
 	if err != nil {
-		return "", err
-	}
-	return tokenStr, nil
-}
-
-func ValidateToken(tokenStr, secretKey string) (uint, string, error) {
-	key := []byte(secretKey)
-	claims := jwt.MapClaims{}
-
-	token, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
-		return key, nil
-	})
-	if err != nil {
-		return 0, "", err
+		return nil, fmt.Errorf("invalid token: %w", err)
 	}
 
-	if !token.Valid {
-		return 0, "", errors.New("invalid token")
+	claims, ok := token.Claims.(*Claims)
+	if !ok {
+		return nil, fmt.Errorf("invalid token claims")
 	}
-	return uint(claims["id"].(float64)), claims["username"].(string), nil
+
+	return claims, nil
 }
