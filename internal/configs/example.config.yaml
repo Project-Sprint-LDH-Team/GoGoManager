@@ -1,3 +1,6 @@
+# rename this file into config.yaml
+# and replace the values with your credentials environments
+
 service:
   port: "[yourPort]"
   secretJWT: "[yourSecretJWT signature]"
