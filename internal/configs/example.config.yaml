@@ -1,0 +1,12 @@
+service:
+  port: "[yourPort]"
+  secretJWT: "[yourSecretJWT signature]"
+
+database:
+  dataSourceName: "[yourDatabase]://[usernameOfDB]:[passwordOfDB]@[hostOfDB]:[portOfDB]/[yourDatabaseName]?sslmode=disable"
+
+aws:
+  region: "your-region"
+  bucket: "your-bucket-name"
+  access_key_id: "your-access-key"
+  secret_access_key: "your-secret-key"
