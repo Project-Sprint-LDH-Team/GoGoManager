@@ -5,6 +5,7 @@ import (
 	"github.com/Project-Sprint-LDH-Team/GoGoManager/internal/service"
 	"github.com/gofiber/fiber/v2"
 	"strconv"
+	"strings"
 )
 
 type DepartmentHandler struct {
@@ -44,13 +45,23 @@ func (h *DepartmentHandler) CreateDepartment(c *fiber.Ctx) error {
 }
 
 func (h *DepartmentHandler) UpdateDepartment(c *fiber.Ctx) error {
-	userID := c.Locals("userID").(uint)
-	departmentID, err := strconv.ParseUint(c.Params("departmentId"), 10, 32)
-	if err != nil {
+	// Get departmentId from params
+	departmentId := c.Params("departmentId")
+	if departmentId == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Invalid department ID",
+			"error": "Department ID is required",
 		})
 	}
+
+	// Validate departmentId format
+	if !strings.HasPrefix(departmentId, "DEP-") {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid department ID format",
+		})
+	}
+
+	// Get userID from context (set by auth middleware)
+	userID := c.Locals("userID").(uint)
 
 	var req models.UpdateDepartmentRequest
 	if err := c.BodyParser(&req); err != nil {
@@ -59,13 +70,14 @@ func (h *DepartmentHandler) UpdateDepartment(c *fiber.Ctx) error {
 		})
 	}
 
+	// Validate request
 	if err := validate.Struct(req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"errors": formatValidationErrors(err),
 		})
 	}
 
-	response, err := h.departmentService.UpdateDepartment(c.Context(), userID, string(departmentID), &req)
+	response, err := h.departmentService.UpdateDepartment(c.Context(), userID, departmentId, &req)
 	if err != nil {
 		switch err.Error() {
 		case "department not found":
@@ -78,7 +90,7 @@ func (h *DepartmentHandler) UpdateDepartment(c *fiber.Ctx) error {
 			})
 		default:
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error": "Failed to update department",
+				"error": "Internal server error",
 			})
 		}
 	}
@@ -87,15 +99,25 @@ func (h *DepartmentHandler) UpdateDepartment(c *fiber.Ctx) error {
 }
 
 func (h *DepartmentHandler) DeleteDepartment(c *fiber.Ctx) error {
-	userID := c.Locals("userID").(uint)
-	departmentID, err := strconv.ParseUint(c.Params("departmentId"), 10, 32)
-	if err != nil {
+	// Get departmentId from params
+	departmentId := c.Params("departmentId")
+	if departmentId == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Invalid department ID",
+			"error": "Department ID is required",
 		})
 	}
 
-	err = h.departmentService.DeleteDepartment(c.Context(), userID, string(departmentID))
+	// Validate departmentId format
+	if !strings.HasPrefix(departmentId, "DEP-") {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid department ID format",
+		})
+	}
+
+	// Get userID from context
+	userID := c.Locals("userID").(uint)
+
+	err := h.departmentService.DeleteDepartment(c.Context(), userID, departmentId)
 	if err != nil {
 		switch err.Error() {
 		case "department not found":
@@ -112,12 +134,14 @@ func (h *DepartmentHandler) DeleteDepartment(c *fiber.Ctx) error {
 			})
 		default:
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error": "Failed to delete department",
+				"error": "Internal server error",
 			})
 		}
 	}
 
-	return c.SendStatus(fiber.StatusOK)
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Department deleted successfully",
+	})
 }
 
 func (h *DepartmentHandler) ListDepartments(c *fiber.Ctx) error {

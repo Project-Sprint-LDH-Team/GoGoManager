@@ -3,9 +3,9 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/Project-Sprint-LDH-Team/GoGoManager/internal/models"
 	"github.com/Project-Sprint-LDH-Team/GoGoManager/internal/repository"
-	"github.com/google/uuid"
 )
 
 type DepartmentService interface {
@@ -27,7 +27,6 @@ func NewDepartmentService(departmentRepo repository.DepartmentRepository) Depart
 
 func (s *departmentService) CreateDepartment(ctx context.Context, userID uint, req *models.CreateDepartmentRequest) (*models.DepartmentResponse, error) {
 	department := &models.Department{
-		ID:     uuid.New().String(), // Generate UUID for department ID
 		UserID: userID,
 		Name:   req.Name,
 	}
@@ -40,11 +39,15 @@ func (s *departmentService) CreateDepartment(ctx context.Context, userID uint, r
 }
 
 func (s *departmentService) UpdateDepartment(ctx context.Context, userID uint, departmentID string, req *models.UpdateDepartmentRequest) (*models.DepartmentResponse, error) {
-	department, err := s.departmentRepo.FindByID(ctx, departmentID)
+	fmt.Printf("Attempting to update department: %s for user: %d\n", departmentID, userID)
+
+	department, err := s.departmentRepo.FindByDepartmentID(ctx, departmentID)
 	if err != nil {
+		fmt.Printf("Error finding department: %v\n", err)
 		return nil, err
 	}
 	if department == nil {
+		fmt.Printf("Department not found: %s\n", departmentID)
 		return nil, errors.New("department not found")
 	}
 
@@ -63,7 +66,7 @@ func (s *departmentService) UpdateDepartment(ctx context.Context, userID uint, d
 }
 
 func (s *departmentService) DeleteDepartment(ctx context.Context, userID uint, departmentID string) error {
-	department, err := s.departmentRepo.FindByID(ctx, departmentID)
+	department, err := s.departmentRepo.FindByDepartmentID(ctx, departmentID)
 	if err != nil {
 		return err
 	}
