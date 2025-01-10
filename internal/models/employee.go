@@ -6,19 +6,17 @@ import (
 
 type Employee struct {
 	ID               uint       `gorm:"primaryKey" json:"-"`
-	UserID           uint       `gorm:"not null;index" json:"-"`
-	DepartmentID     string     `gorm:"type:varchar(36);not null;index" json:"-"` // Pastikan tipe data sama
-	IdentityNumber   string     `gorm:"uniqueIndex;size:33;not null" json:"identityNumber"`
+	DepartmentID     string     `gorm:"size:10;not null" json:"-"` // FK ke Department.DepartmentID
+	IdentityNumber   string     `gorm:"uniqueIndex;size:33;not null" json:"identity_number"`
 	Name             string     `gorm:"size:33;not null" json:"name"`
-	EmployeeImageUri string     `gorm:"size:255" json:"employeeImageUri"`
+	EmployeeImageUri string     `gorm:"size:255" json:"employee_image_uri"`
 	Gender           string     `gorm:"size:6;not null" json:"gender"`
 	CreatedAt        time.Time  `json:"created_at"`
 	UpdatedAt        time.Time  `json:"updated_at"`
 	DeletedAt        *time.Time `gorm:"index" json:"-"`
 
-	// Relations
-	User       User       `gorm:"foreignKey:UserID" json:"-"`
-	Department Department `gorm:"foreignKey:DepartmentID;references:ID" json:"-"`
+	// Relasi ke Department (Many-to-One)
+	Department Department `gorm:"foreignKey:DepartmentID;references:DepartmentID" json:"-"`
 }
 
 type CreateEmployeeRequest struct {
@@ -42,7 +40,7 @@ type EmployeeResponse struct {
 	Name             string `json:"name"`
 	EmployeeImageUri string `json:"employeeImageUri"`
 	Gender           string `json:"gender"`
-	DepartmentId     string `json:"departmentId"`
+	DepartmentID     string `json:"departmentId"` // Format: DEP-XX
 }
 
 func (e *Employee) ToResponse() *EmployeeResponse {
@@ -51,7 +49,7 @@ func (e *Employee) ToResponse() *EmployeeResponse {
 		Name:             e.Name,
 		EmployeeImageUri: e.EmployeeImageUri,
 		Gender:           e.Gender,
-		DepartmentId:     e.DepartmentID,
+		DepartmentID:     e.DepartmentID, // Format: DEP-XX
 	}
 }
 

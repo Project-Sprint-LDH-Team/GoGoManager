@@ -28,7 +28,7 @@ func NewEmployeeService(employeeRepo repository.EmployeeRepository, departmentRe
 
 func (s *employeeService) CreateEmployee(ctx context.Context, req *models.CreateEmployeeRequest) (*models.EmployeeResponse, error) {
 	// Check if department exists
-	dept, err := s.departmentRepo.FindByID(ctx, req.DepartmentId)
+	dept, err := s.departmentRepo.FindByDepartmentID(ctx, req.DepartmentId)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (s *employeeService) UpdateEmployee(ctx context.Context, identityNumber str
 	}
 
 	// Check if department exists
-	dept, err := s.departmentRepo.FindByID(ctx, req.DepartmentId)
+	dept, err := s.departmentRepo.FindByDepartmentID(ctx, req.DepartmentId)
 	if err != nil {
 		return nil, err
 	}
