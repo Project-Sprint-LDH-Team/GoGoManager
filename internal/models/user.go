@@ -8,8 +8,8 @@ import (
 
 type User struct {
 	ID              uint      `gorm:"primaryKey" json:"id"`
-	Email           string    `gorm:"uniqueIndex;size:255;not null" json:"email"`
-	Password        string    `gorm:"size:255;not null" json:"-"`
+	Email           string    `gorm:"uniqueIndex;size:255" json:"email"`
+	Password        string    `gorm:"size:255" json:"-"`
 	Name            string    `gorm:"size:52" json:"name"`
 	UserImageUri    string    `gorm:"size:255" json:"user_image_uri"`
 	CompanyName     string    `gorm:"size:52" json:"company_name"`
@@ -17,10 +17,8 @@ type User struct {
 	CreatedAt       time.Time `json:"created_at"`
 	UpdatedAt       time.Time `json:"updated_at"`
 
-	// Relations
+	// Relasi One-to-Many dengan Department
 	Departments []Department `gorm:"foreignKey:UserID" json:"-"`
-	Files       []File       `gorm:"foreignKey:UserID" json:"-"`
-	Employees   []Employee   `gorm:"foreignKey:UserID" json:"-"`
 }
 
 // Request structs
