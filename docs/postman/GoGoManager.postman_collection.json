@@ -1,0 +1,386 @@
+{
+	"info": {
+		"_postman_id": "76fe131f-a2a3-42a0-b44f-c37fa5c0e005",
+		"name": "GoGoManager",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "35099204"
+	},
+	"item": [
+		{
+			"name": "Authentication & Authorization",
+			"item": [
+				{
+					"name": "Signup & Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"name@name.com\", // should in email format\r\n  \"password\": \"asdfasdf\", // string | minLength: 8 | maxLength: 32\r\n  \"action\": \"login\" // string | enum\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/v1/auth",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"v1",
+								"auth"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Profile Management",
+			"item": [
+				{
+					"name": "User Profile",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3MzY1MDM0MjgsImlhdCI6MTczNjQxNzAyOH0.KkSKlu_sscWIIl7aiL33bfpHzHqsC-eCC8EgNW970N4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/v1/user",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"v1",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit User Profile",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3MzY1MDM0MjgsImlhdCI6MTczNjQxNzAyOH0.KkSKlu_sscWIIl7aiL33bfpHzHqsC-eCC8EgNW970N4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"name@name.com\", // should in email format\r\n  \"name\": \"Dapuk\", // string | minLength 4 | maxLength 52\r\n  \"userImageUri\": \"https://www.easygifanimator.net/images/samples/video-to-gif-sample.gif\", // string | should be an URI\r\n  \"companyName\": \"PT ABCDEFG\", // string | minLength 4 | maxLength 52\r\n  \"companyImageUri\": \"https://www.easygifanimator.net/images/samples/video-to-gif-sample.gif\" // string | should be an URI\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/v1/user",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"v1",
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "File Upload",
+			"item": [
+				{
+					"name": "Upload File",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/v1/file",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"v1",
+								"file"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Employees",
+			"item": [
+				{
+					"name": "Create Employee",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3MzY1MDM0MjgsImlhdCI6MTczNjQxNzAyOH0.KkSKlu_sscWIIl7aiL33bfpHzHqsC-eCC8EgNW970N4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"identityNumber\": \"000010\", // string | minlength 5 | maxlength 33\r\n  \"name\": \"Dapuk\", // string | minlength 4 | maxlength 33\r\n  \"employeeImageUri\": \"https://www.easygifanimator.net/images/samples/video-to-gif-sample.gif\", // string | should be an uri\r\n  \"gender\": \"male\", // string | enum\r\n  \"departmentId\": \"1\" // string | should be a valid departmentId\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/v1/employee",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"v1",
+								"employee"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Employee List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/v1/employee",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"v1",
+								"employee"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Employee",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/v1/employee/:identityNumber",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"v1",
+								"employee",
+								":identityNumber"
+							],
+							"variable": [
+								{
+									"key": "identityNumber",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Employee",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/v1/employee/:identityNumber",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"v1",
+								"employee",
+								":identityNumber"
+							],
+							"variable": [
+								{
+									"key": "identityNumber",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Departments",
+			"item": [
+				{
+					"name": "Create Department",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3MzY1MDM0MjgsImlhdCI6MTczNjQxNzAyOH0.KkSKlu_sscWIIl7aiL33bfpHzHqsC-eCC8EgNW970N4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Ini Harus Di Delete\" // string | minlength 4 | maxlength 33\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/v1/department",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"v1",
+								"department"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Department List",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3MzY1MDM0MjgsImlhdCI6MTczNjQxNzAyOH0.KkSKlu_sscWIIl7aiL33bfpHzHqsC-eCC8EgNW970N4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl}}/v1/department?limit=5&offset=0&name=",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"v1",
+								"department"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								},
+								{
+									"key": "name",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Department",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3MzY1MDM0MjgsImlhdCI6MTczNjQxNzAyOH0.KkSKlu_sscWIIl7aiL33bfpHzHqsC-eCC8EgNW970N4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Aku Delete Kamu\" // string | minlength 4 | maxlength 33\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/v1/department/:departmentId",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"v1",
+								"department",
+								":departmentId"
+							],
+							"variable": [
+								{
+									"key": "departmentId",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Department",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/v1/department/:departmentId",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"v1",
+								"department",
+								":departmentId"
+							],
+							"variable": [
+								{
+									"key": "departmentId",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
