@@ -2,10 +2,13 @@ package main
 
 import (
 	"context"
+	"log"
+
 	"github.com/Project-Sprint-LDH-Team/GoGoManager/internal/configs"
 	"github.com/Project-Sprint-LDH-Team/GoGoManager/internal/handlers"
 	"github.com/Project-Sprint-LDH-Team/GoGoManager/internal/middleware"
 	"github.com/Project-Sprint-LDH-Team/GoGoManager/internal/repository"
+	"github.com/Project-Sprint-LDH-Team/GoGoManager/internal/routes"
 	"github.com/Project-Sprint-LDH-Team/GoGoManager/internal/service"
 	"github.com/Project-Sprint-LDH-Team/GoGoManager/pkg/internalsql"
 	"github.com/Project-Sprint-LDH-Team/GoGoManager/pkg/jwt"
@@ -13,7 +16,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/gofiber/fiber/v2"
-	"log"
 )
 
 func main() {
@@ -85,30 +87,16 @@ func main() {
 	// Initialize Fiber app
 	app := fiber.New()
 
-	// Routes
-	api := app.Group("/v1")
-
-	// Auth routes
-	api.Post("/auth", authHandler.HandleAuth)
-
-	// Profile routes (protected)
-	api.Get("/user", authMiddleware.AuthRequired(), profileHandler.GetProfile)
-	api.Patch("/user", authMiddleware.AuthRequired(), profileHandler.UpdateProfile)
-
-	// File upload route (protected)
-	api.Post("/file", authMiddleware.AuthRequired(), fileHandler.UploadFile)
-
-	// Employee routes (protected)
-	api.Post("/employee", authMiddleware.AuthRequired(), employeeHandler.CreateEmployee)
-	api.Get("/employee", authMiddleware.AuthRequired(), employeeHandler.ListEmployees)
-	api.Patch("/employee/:identityNumber", authMiddleware.AuthRequired(), employeeHandler.UpdateEmployee)
-	api.Delete("/employee/:identityNumber", authMiddleware.AuthRequired(), employeeHandler.DeleteEmployee)
-
-	// Department routes
-	api.Post("/department", authMiddleware.AuthRequired(), departmentHandler.CreateDepartment)
-	api.Get("/department", authMiddleware.AuthRequired(), departmentHandler.ListDepartments)
-	api.Patch("/department/:departmentId", authMiddleware.AuthRequired(), departmentHandler.UpdateDepartment)
-	api.Delete("/department/:departmentId", authMiddleware.AuthRequired(), departmentHandler.DeleteDepartment)
+	// setup routes
+	routes.SetupRoutes(
+		app,
+		authMiddleware,
+		authHandler,
+		profileHandler,
+		fileHandler,
+		employeeHandler,
+		departmentHandler,
+	)
 
 	// Start server
 	err = app.Listen(":" + cfg.Service.Port)
